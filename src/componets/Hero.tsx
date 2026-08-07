@@ -17,7 +17,7 @@ export default function Hero() {
       {/* 3. IMAGEN PRINCIPAL / GIF DEL PRODUCTO */}
       <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-white border-2 border-slate-200 shadow-xl">
         <Image
-          src="/images/producto.jpg" // 👈 Asegúrate de tener esta imagen en public/images/producto.jpg
+          src="/banner.png" // 👈 Asegúrate de tener esta imagen en public/images/producto.jpg
           alt="Producto Ganador Randiway"
           fill
           priority
