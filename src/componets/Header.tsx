@@ -1,95 +1,186 @@
-import React from 'react';
-import { Search, MapPin, ChevronDown, Heart, ShoppingCart } from 'lucide-react';
+"use client";
+
+import  { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { Search, ChevronDown, Heart, ShoppingCart, Menu, X, User, ChevronRight } from 'lucide-react';
 
 export default function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Prevenir el scroll del body cuando el menú móvil está abierto
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMenuOpen]);
+
+  const categories = ['Mujer', 'Hombre', 'Nueva Colección', 'Básicos', 'Accesorios'];
+
   return (
-    <header className="w-full bg-white border-b border-stone-200 font-sans tracking-wide">
-      {/* --- SECCIÓN SUPERIOR --- */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-24 gap-4">
-          
-          {/* Logo RandiWay (Estilo Boutique) */}
-          <div className="flex-shrink-0">
-            <a href="/" className="inline-flex items-center text-zinc-900 text-3xl md:text-4xl font-extrabold tracking-tighter hover:opacity-80 transition-opacity">
-              RandiWay<span className="text-emerald-700 ml-0.5">.</span>
-            </a>
-          </div>
-
-          {/* Barra de Búsqueda (Estilo Moderno/Redondeado) */}
-          <div className="hidden md:flex flex-1 max-w-2xl mx-8">
-            <div className="flex w-full border border-stone-300 bg-stone-50 rounded-full overflow-hidden focus-within:border-emerald-700 focus-within:ring-1 focus-within:ring-emerald-700 transition-all shadow-sm">
-              <input 
-                type="text" 
-                placeholder="Buscar colecciones, prendas, accesorios..." 
-                className="w-full px-6 py-2.5 bg-transparent outline-none text-sm text-stone-700 placeholder-stone-400"
-              />
-              <button className="bg-emerald-800 text-white px-6 flex items-center justify-center hover:bg-emerald-900 transition-colors">
-                <Search size={18} />
-              </button>
-            </div>
-          </div>
-
-          {/* Acciones de Usuario (Ubicación, Login, Íconos) */}
-          <div className="flex items-center gap-6 md:gap-8">
+    <header className="w-full bg-white font-sans tracking-wide relative z-50">
+      
+      {/* --- BARRA PRINCIPAL --- */}
+      <div className="border-b border-stone-200">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 md:h-24 gap-4">
             
-            {/* Selector de Ubicación */}
-            <button className="hidden lg:flex items-center gap-2 group">
-              <MapPin className="text-emerald-700 group-hover:scale-110 transition-transform" size={24} strokeWidth={1.5} />
-              <div className="text-left text-[12px] text-stone-600">
-                <p className="leading-tight">Enviar a</p>
-                <p className="font-semibold text-zinc-900 underline decoration-stone-300 underline-offset-4 group-hover:decoration-emerald-700 transition-colors">
-                  Bogotá, Colombia
-                </p>
-              </div>
-            </button>
-
-            {/* Login / Registro */}
-            <button className="hidden lg:flex items-center gap-1 hover:text-emerald-800 transition-colors text-left group">
-              <div className="text-[12px] text-stone-600 group-hover:text-emerald-800 transition-colors">
-                <p className="leading-tight">Mi cuenta</p>
-                <p className="font-semibold text-zinc-900 group-hover:text-emerald-800 leading-tight flex items-center gap-1">
-                  Ingresar <ChevronDown size={14} strokeWidth={2} />
-                </p>
-              </div>
-            </button>
-
-            {/* Íconos Wishlist y Carrito */}
-            <div className="flex items-center gap-5 text-zinc-800">
-              <button className="hover:text-emerald-700 transition-colors">
-                <Heart size={24} strokeWidth={1.5} />
+            {/* Lado Izquierdo: Menú (Móvil) + Logo */}
+            <div className="flex items-center gap-3 md:gap-0">
+              <button 
+                className="md:hidden p-1 -ml-1 text-zinc-900 hover:text-emerald-700 transition-colors"
+                onClick={() => setIsMenuOpen(true)}
+                aria-label="Abrir menú"
+              >
+                <Menu size={26} strokeWidth={1.5} />
               </button>
-              <button className="hover:text-emerald-700 transition-colors relative">
-                <ShoppingCart size={24} strokeWidth={1.5} />
-                {/* Indicador de items en el carrito (Premium style) */}
-                <span className="absolute -top-1.5 -right-2 bg-emerald-800 text-white text-[10px] font-medium px-1.5 py-0.5 rounded-full border-2 border-white">
-                  2
-                </span>
+              
+              <Link href="/" className="inline-flex items-center text-zinc-900 text-2xl md:text-4xl font-extrabold tracking-tighter hover:opacity-80 transition-opacity">
+                RandiWay<span className="text-emerald-700 ml-0.5">.</span>
+              </Link>
+            </div>
+
+            {/* Centro: Buscador (Oculto en móvil, visible en Desktop) */}
+            <div className="hidden md:flex flex-1 max-w-2xl mx-8">
+              <div className="flex w-full border border-stone-300 bg-stone-50 rounded-full overflow-hidden focus-within:border-emerald-700 focus-within:ring-1 focus-within:ring-emerald-700 transition-all shadow-sm">
+                <input 
+                  type="text" 
+                  placeholder="Buscar colecciones, prendas, accesorios..." 
+                  className="w-full px-6 py-2.5 bg-transparent outline-none text-sm text-stone-700 placeholder-stone-400"
+                />
+                <button className="bg-emerald-800 text-white px-6 flex items-center justify-center hover:bg-emerald-900 transition-colors">
+                  <Search size={18} />
+                </button>
+              </div>
+            </div>
+
+            {/* Lado Derecho: Iconos de acción */}
+            <div className="flex items-center gap-4 md:gap-8">
+              {/* Mi Cuenta (Solo Desktop) */}
+              <button className="hidden lg:flex items-center gap-1 hover:text-emerald-800 transition-colors text-left group">
+                <div className="text-[12px] text-stone-600 group-hover:text-emerald-800 transition-colors">
+                  <p className="leading-tight">Mi cuenta</p>
+                  <p className="font-semibold text-zinc-900 group-hover:text-emerald-800 leading-tight flex items-center gap-1">
+                    Ingresar <ChevronDown size={14} strokeWidth={2} />
+                  </p>
+                </div>
               </button>
+
+              <div className="flex items-center gap-4 md:gap-5 text-zinc-800">
+                {/* Favoritos (Solo Desktop) */}
+                <Link href="/favoritos" className="hidden md:block hover:text-emerald-700 transition-colors">
+                  <Heart size={24} strokeWidth={1.5} />
+                </Link>
+
+                {/* Carrito (Siempre visible) */}
+                <Link href="/carrito" className="hover:text-emerald-700 transition-colors relative p-1 md:p-0">
+                  <ShoppingCart size={24} strokeWidth={1.5} />
+                  <span className="absolute -top-0.5 -right-1 md:-top-1.5 md:-right-2 bg-emerald-800 text-white text-[10px] font-medium px-1.5 py-0.5 rounded-full border-2 border-white">
+                    2
+                  </span>
+                </Link>
+              </div>
             </div>
 
           </div>
         </div>
       </div>
 
-      {/* --- SECCIÓN INFERIOR (Barra de Navegación Minimalista) --- */}
-      <nav className="border-t border-stone-100">
-        <div className="max-w-[1400px] mx-auto flex justify-center overflow-x-auto scrollbar-hide">
-          <ul className="flex items-center text-[11px] md:text-[12px] font-semibold tracking-[0.15em] text-stone-500 uppercase">
+      {/* --- BUSCADOR MÓVIL (Solo visible en pantallas pequeñas) --- */}
+      <div className="md:hidden border-b border-stone-200 bg-white px-4 py-3">
+        <div className="flex w-full border border-stone-300 bg-stone-50 rounded-full overflow-hidden focus-within:border-emerald-700 focus-within:ring-1 focus-within:ring-emerald-700 transition-all">
+          <input 
+            type="text" 
+            placeholder="Buscar productos..." 
+            className="w-full px-4 py-2 bg-transparent outline-none text-[15px] text-stone-700 placeholder-stone-400"
+          />
+          <button className="bg-emerald-800 text-white px-4 flex items-center justify-center hover:bg-emerald-900">
+            <Search size={18} />
+          </button>
+        </div>
+      </div>
+
+      {/* --- NAVEGACIÓN DE CATEGORÍAS (Desktop) --- */}
+      <nav className="hidden md:block border-b border-stone-100 bg-white">
+        <div className="max-w-[1400px] mx-auto flex justify-center">
+          <ul className="flex items-center text-[12px] font-semibold tracking-[0.15em] text-stone-500 uppercase">
             <li>
-              <a href="/ofertas" className="block px-5 py-4 md:px-8 text-emerald-800 font-bold whitespace-nowrap hover:text-emerald-600 transition-colors">
+              <Link href="/ofertas" className="block px-8 py-4 text-emerald-800 font-bold hover:text-emerald-600 transition-colors">
                 EXCLUSIVAS
-              </a>
+              </Link>
             </li>
-            {['Mujer', 'Hombre', 'Nueva Colección', 'Básicos', 'Accesorios'].map((item) => (
+            {categories.map((item) => (
               <li key={item}>
-                <a href={`/categoria/${item.toLowerCase().replace(' ', '-')}`} className="block px-5 py-4 md:px-8 whitespace-nowrap hover:text-zinc-900 transition-colors">
+                <Link href={`/categoria/${item.toLowerCase().replace(' ', '-')}`} className="block px-8 py-4 hover:text-zinc-900 hover:bg-stone-50 transition-all">
                   {item}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
         </div>
       </nav>
+
+      {/* --- MENÚ LATERAL MÓVIL (Drawer) --- */}
+      {/* Fondo oscuro overlay */}
+      <div 
+        className={`fixed inset-0 bg-zinc-900/60 backdrop-blur-sm z-40 transition-opacity duration-300 md:hidden ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+        onClick={() => setIsMenuOpen(false)}
+      />
+
+      {/* Panel lateral */}
+      <div className={`fixed top-0 left-0 h-full w-[85%] max-w-[320px] bg-white z-50 transform transition-transform duration-300 ease-in-out md:hidden flex flex-col ${isMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}`}>
+        
+        {/* Cabecera del Drawer */}
+        <div className="flex items-center justify-between p-4 border-b border-stone-100 bg-stone-50">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-800">
+              <User size={20} />
+            </div>
+            <div>
+              <p className="text-[11px] text-stone-500 uppercase tracking-wider font-semibold">Bienvenido</p>
+              <Link href="/login" className="text-zinc-900 font-bold text-sm hover:text-emerald-700" onClick={() => setIsMenuOpen(false)}>
+                Ingresa a tu cuenta
+              </Link>
+            </div>
+          </div>
+          <button onClick={() => setIsMenuOpen(false)} className="p-2 text-stone-400 hover:text-zinc-900 bg-white rounded-full shadow-sm">
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Links del Drawer */}
+        <div className="flex-1 overflow-y-auto py-2">
+          <Link href="/ofertas" className="flex items-center justify-between px-5 py-4 text-emerald-700 font-bold text-sm tracking-wide border-b border-stone-50" onClick={() => setIsMenuOpen(false)}>
+            OFERTAS EXCLUSIVAS
+            <ChevronRight size={16} className="opacity-50" />
+          </Link>
+          
+          {categories.map((item) => (
+            <Link 
+              key={item} 
+              href={`/categoria/${item.toLowerCase().replace(' ', '-')}`} 
+              className="flex items-center justify-between px-5 py-4 text-zinc-700 font-medium text-sm border-b border-stone-50 hover:bg-stone-50"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              {item}
+              <ChevronRight size={16} className="text-stone-300" />
+            </Link>
+          ))}
+        </div>
+
+        {/* Footer del Drawer (Favoritos, etc) */}
+        <div className="p-4 border-t border-stone-100 bg-stone-50 space-y-3">
+          <Link href="/favoritos" className="flex items-center gap-3 text-zinc-700 font-medium text-sm p-2 hover:text-emerald-700" onClick={() => setIsMenuOpen(false)}>
+            <Heart size={20} className="text-stone-400" />
+            Mis Favoritos
+          </Link>
+        </div>
+      </div>
+
     </header>
   );
 }
