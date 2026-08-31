@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import CartSidebar from "@/componets/CartSidebar";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,7 +20,6 @@ export const metadata: Metadata = {
   icons:{ icon: "/randiway.ico" },
 };
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,10 +27,14 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="es" // Cambiado a 'es' para mejor SEO local
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+
+        <CartSidebar />
+      </body>
     </html>
   );
 }
