@@ -1,15 +1,16 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Product } from '../type/Product'; // Ajusta la ruta a tu interfaz
+import type { Product } from '../type/Product';
 
-// Extendemos tu producto para agregarle la cantidad
 export interface CartItem extends Product {
   quantity: number;
 }
 
 interface CartState {
   items: CartItem[];
-  isOpen: boolean; // Controla si el panel lateral está abierto
+  isOpen: boolean;
+  hydrated: boolean;
+  setHydrated: () => void;
   openCart: () => void;
   closeCart: () => void;
   addToCart: (product: Product) => void;
@@ -22,24 +23,25 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       items: [],
       isOpen: false,
-      
+      hydrated: false,
+
+      setHydrated: () => set({ hydrated: true }),
+
       openCart: () => set({ isOpen: true }),
       closeCart: () => set({ isOpen: false }),
-      
+
       addToCart: (product) => {
         const currentItems = get().items;
         const existingItem = currentItems.find((item) => item.id === product.id);
 
         if (existingItem) {
-          // Si ya existe, sumamos 1 a la cantidad
           set({
             items: currentItems.map((item) =>
               item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
             ),
-            isOpen: true, // Abrimos el carrito visualmente para que el usuario vea el cambio
+            isOpen: true,
           });
         } else {
-          // Si es nuevo, lo agregamos con cantidad 1
           set({ items: [...currentItems, { ...product, quantity: 1 }], isOpen: true });
         }
       },
@@ -51,7 +53,29 @@ export const useCartStore = create<CartState>()(
       clearCart: () => set({ items: [] }),
     }),
     {
-      name: 'randiway-cart-storage', // Nombre con el que se guardará en localStorage
+      name: 'randiway-cart-storage',
+      partialize: (state) => ({
+        items: state.items,
+        isOpen: state.isOpen,
+      }),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.setHydrated();
+        } else {
+          useCartStore.setState({ hydrated: true });
+        }
+      },
     }
   )
 );
+
+export const rehydrateCart = () => {
+  if (useCartStore.persist.hasHydrated()) {
+    useCartStore.setState({ hydrated: true });
+    return;
+  }
+  useCartStore.persist.onFinishHydration(() => {
+    useCartStore.setState({ hydrated: true });
+  });
+  useCartStore.persist.rehydrate();
+};

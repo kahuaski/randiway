@@ -1,5 +1,6 @@
-import PayCard from '@/componets/PayCard'
-import React from 'react'
+"use client"
+import PayCard from '@/components/PayCard'
+
 
 export default function page() {
   return (

@@ -1,7 +1,7 @@
-import Hero from '../componets/Hero';
-import Header from '../componets/Header';
-import Footer from '../componets/Footer';
-import CartSidebar from '@/componets/CartSidebar';
+import Hero from '../components/Hero';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import CartSidebar from '@/components/CartSidebar';
 
 
 export default function Home() {

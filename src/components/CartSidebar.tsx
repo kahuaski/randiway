@@ -17,7 +17,9 @@ export default function CartSidebar() {
 
   if (!mounted) return null;
 
-  const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const total = items.reduce<number>((acc: number, item: { price: number; quantity: number }) => {
+    return acc + item.price * item.quantity;
+  }, 0);
 
   return (
     <>
@@ -54,24 +56,34 @@ export default function CartSidebar() {
               <p>Tu carrito está vacío</p>
             </div>
           ) : (
-            items.map((item) => (
-              <div key={item.id} className="flex gap-4 border border-gray-100 p-3 rounded-xl">
-                <div className="relative w-20 h-20 bg-gray-50 rounded-lg overflow-hidden shrink-0">
-                  <Image src={item.imageUrl} alt={item.name} fill className="object-cover" />
+            items.map(
+              (
+                item: {
+                  id: string | number;
+                  imageUrl: string;
+                  name: string;
+                  quantity: number;
+                  price: number;
+                }
+              ) => (
+                <div key={item.id} className="flex gap-4 border border-gray-100 p-3 rounded-xl">
+                  <div className="relative w-20 h-20 bg-gray-50 rounded-lg overflow-hidden shrink-0">
+                    <Image src={item.imageUrl} alt={item.name} fill className="object-cover" />
+                  </div>
+                  <div className="flex flex-col flex-1 justify-center">
+                    <h3 className="font-bold text-sm text-gray-900 line-clamp-1">{item.name}</h3>
+                    <p className="text-sm text-gray-500">Cant: {item.quantity}</p>
+                    <p className="font-black text-emerald-600">${(item.price * item.quantity).toFixed(2)}</p>
+                  </div>
+                  <button 
+                    onClick={() => removeFromCart(item.id)}
+                    className="text-red-400 hover:text-red-600 p-2"
+                  >
+                    <FaTrash />
+                  </button>
                 </div>
-                <div className="flex flex-col flex-1 justify-center">
-                  <h3 className="font-bold text-sm text-gray-900 line-clamp-1">{item.name}</h3>
-                  <p className="text-sm text-gray-500">Cant: {item.quantity}</p>
-                  <p className="font-black text-emerald-600">${(item.price * item.quantity).toFixed(2)}</p>
-                </div>
-                <button 
-                  onClick={() => removeFromCart(item.id)}
-                  className="text-red-400 hover:text-red-600 p-2"
-                >
-                  <FaTrash />
-                </button>
-              </div>
-            ))
+              )
+            )
           )}
         </div>
 
