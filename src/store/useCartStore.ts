@@ -16,6 +16,7 @@ interface CartState {
   addToCart: (product: Product) => void;
   removeFromCart: (productId: string | number) => void;
   clearCart: () => void;
+  updateQuantity: (productId: string | number, quantity: number) => void;
 }
 
 export const useCartStore = create<CartState>()(
@@ -35,16 +36,28 @@ export const useCartStore = create<CartState>()(
         const existingItem = currentItems.find((item) => item.id === product.id);
 
         if (existingItem) {
+  
           set({
             items: currentItems.map((item) =>
               item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
             ),
-            isOpen: true,
+            isOpen: true, 
           });
         } else {
+
           set({ items: [...currentItems, { ...product, quantity: 1 }], isOpen: true });
         }
       },
+
+  
+updateQuantity: (productId, quantity) => {
+  if (quantity < 1) return; // Evita cantidades negativas o cero
+  set({
+    items: get().items.map((item) =>
+      item.id === productId ? { ...item, quantity } : item
+    ),
+  });
+},
 
       removeFromCart: (productId) => {
         set({ items: get().items.filter((item) => item.id !== productId) });

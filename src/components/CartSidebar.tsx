@@ -1,6 +1,6 @@
 "use client";
 
-import { useCartStore } from '@/store/useCartStore'; // Ajusta la ruta
+import { useCartStore } from '@/store/useCartStore'; 
 import Image from 'next/image';
 import { FaTimes, FaTrash } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
@@ -10,7 +10,6 @@ export default function CartSidebar() {
   const { items, isOpen, closeCart, removeFromCart, clearCart } = useCartStore();
   const [mounted, setMounted] = useState(false);
 
-  // Evitar error de hidratación en Next.js (el server no tiene localStorage)
   useEffect(() => {
     return () => setMounted(true);
   }, []);
@@ -23,21 +22,17 @@ export default function CartSidebar() {
 
   return (
     <>
-      {/* Fondo oscuro detrás del carrito */}
       {isOpen && (
         <div 
           className="fixed inset-0 bg-black/50 z-40 transition-opacity backdrop-blur-sm"
           onClick={closeCart}
         />
       )}
-
-      {/* Panel lateral derecho */}
       <div 
         className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white z-50 shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        {/* Cabecera del Carrito */}
         <div className="flex items-center justify-between p-4 border-b border-gray-100">
           <h2 className="text-xl font-black text-gray-900">Tu Carrito ({items.length})</h2>
           <button 
@@ -48,7 +43,6 @@ export default function CartSidebar() {
           </button>
         </div>
 
-        {/* Lista de Productos */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-gray-500 gap-4">
@@ -87,7 +81,6 @@ export default function CartSidebar() {
           )}
         </div>
 
-        {/* Footer del Carrito (Total y Botones) */}
         {items.length > 0 && (
           <div className="p-4 border-t border-gray-100 bg-gray-50">
             <div className="flex justify-between items-center mb-4">

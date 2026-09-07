@@ -5,6 +5,7 @@ import BentoStores, { Store } from './Stores';
 import type { HeroCategory } from './HeroBanner';
 import HeroBanner from './HeroBanner';
 import { FaGlasses, FaHatCowboy, FaShoePrints, FaTshirt } from 'react-icons/fa';
+import SelectGeography from './SelectGeography';
 
 export default function HeroCategories() {
   const storeCategories: HeroCategory[] = [
@@ -48,6 +49,7 @@ export default function HeroCategories() {
   return (
 
     <div className="w-full flex flex-col">
+      <SelectGeography />
       <HeroBanner
         backgroundImage="/moda1.png"
         imageAlt=" RandiWay"

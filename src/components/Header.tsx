@@ -1,36 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import {
-  Search,
-  ChevronDown,
-  Heart,
-  ShoppingCart,
-  Menu,
-  X,
-  User,
-  ChevronRight,
-} from "lucide-react";
-import { useCartStore } from "@/store/useCartStore";
-
-type CartStoreState = {
-  items: Array<{ quantity: number }>;
-  openCart: () => void;
-};
+import { useState, useEffect, useSyncExternalStore } from 'react';
+import Link from 'next/link';
+import { Search, ChevronDown, Heart, ShoppingCart, Menu, X, User, ChevronRight } from 'lucide-react';
+import { useCartStore } from '@/store/useCartStore';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isMounted, setIsMounted] = useState(false); 
-
-  const items = useCartStore((state: CartStoreState) => state.items);
-  const openCart = useCartStore((state: CartStoreState) => state.openCart);
-
-  const totalItems = items.reduce((total, item) => total + item.quantity, 0);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+  
+  const { items, openCart } = useCartStore();
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -42,6 +25,10 @@ export default function Header() {
       document.body.style.overflow = "unset";
     };
   }, [isMenuOpen]);
+
+  const categories = ['Mujer', 'Hombre', 'Nueva Colección', 'Básicos', 'Accesorios'];
+
+  const cartItemCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <header className="w-full bg-white font-sans tracking-wide relative z-50">
@@ -95,22 +82,18 @@ export default function Header() {
                   <Heart size={24} strokeWidth={1.5} />
                 </Link>
 
-                <Link
-                  rel="preload"
-                  href="/pay"
-                  as="pay"
-                  onClick={openCart}
-                  className="hover:text-emerald-700 transition-colors relative p-1 md:p-0"
+                <button 
+                  onClick={openCart} 
+                  className="hover:text-emerald-700 transition-colors relative p-1 md:p-0 cursor-pointer"
                   aria-label="Abrir carrito"
                 >
                   <ShoppingCart size={24} strokeWidth={1.5} />
-    
-                  {isMounted && totalItems > 0 && (
-                    <span className="absolute -top-0.5 -right-1 md:-top-1.5 md:-right-2 bg-emerald-800 text-white text-[10px] font-medium px-1.5 py-0.5 rounded-full border-2 border-white">
-                      {totalItems > 99 ? "99+" : totalItems}
+                  {mounted && cartItemCount > 0 && (
+                    <span className="absolute -top-0.5 -right-1 md:-top-1.5 md:-right-2 bg-emerald-800 text-white text-[10px] font-medium px-1.5 py-0.5 rounded-full border-2 border-white flex items-center justify-center min-w-[20px] h-[20px]">
+                      {cartItemCount}
                     </span>
                   )}
-                </Link>
+                </button>
               </div>
             </div>
           </div>
